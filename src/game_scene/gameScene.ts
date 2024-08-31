@@ -173,7 +173,7 @@ export class GameScene extends g.Scene {
                             const bosunScore = GameScene.COMPLETE_GOAL_BONUS_SCORE + GameScene.TIME_BONUS_SCORE * remainingSec;
                             this.scoreLabel.addScoreAnimation(bosunScore, GameScene.BONUS_SCORE_ANIM_DURATION);
 
-                            this.removeListner();
+                            this.removeListener();
                             this.removeUpdateHandler();
                             this.completeGoalGame(collisionable);
                             break;
@@ -370,7 +370,7 @@ export class GameScene extends g.Scene {
         this.countdownTimer.onFinish = (() => {
             if (this.isCompleteGoal) return;
 
-            this.removeListner();
+            this.removeListener();
             this.removeUpdateHandler();
             this.effectLayer.children?.forEach(e => {
                 e?.onUpdate.removeAll();
@@ -384,7 +384,7 @@ export class GameScene extends g.Scene {
         });
     };
 
-    private removeListner = (): void => {
+    private removeListener = (): void => {
         this.onPointDownCapture.remove(this.pointDownHandler);
         this.onPointMoveCapture.remove(this.pointMoveHandler);
         this.removeMouseMoveListener();
