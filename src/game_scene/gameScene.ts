@@ -113,29 +113,17 @@ export class GameScene extends g.Scene {
             });
     };
 
-    private updateCountdownHandler = (): void | boolean => {
-        this.countdownTimer.update();
-    };
+    private updateCountdownHandler = (): void | boolean => { this.countdownTimer.update(); };
 
-    private pointDownHandler = (ev: g.PointDownEvent): void => {
-        this.nicomobaChan.jump(ev.point);
-    };
+    private pointDownHandler = (ev: g.PointDownEvent): void => { this.nicomobaChan.jump(ev.point); };
 
-    private pointMoveHandler = (ev: g.PointMoveEvent): void => {
-        this.nicomobaChan.move(ev.point.x + ev.startDelta.x);
-    };
+    private pointMoveHandler = (ev: g.PointMoveEvent): void => { this.nicomobaChan.move(ev.point.x + ev.startDelta.x); };
 
-    private addMouseMoveListener = (): void => {
-        window?.addEventListener('mousemove', this.mouseMoveListener);
-    };
+    private addMouseMoveListener = (): void => { window?.addEventListener('mousemove', this.mouseMoveListener); };
 
-    private removeMouseMoveListener = (): void => {
-        window?.addEventListener('mousemove', this.mouseMoveListener);
-    };
+    private removeMouseMoveListener = (): void => { window?.addEventListener('mousemove', this.mouseMoveListener); };
 
-    private mouseMoveListener = (ev: MouseEvent): void => {
-        this.nicomobaChan.move(ev.clientX);
-    };
+    private mouseMoveListener = (ev: MouseEvent): void => { this.nicomobaChan.move(ev.clientX); };
 
     private createNicomobaChan = (): void => {
         const detectCollision = (nicomobaChan: NicomobaChan): void => {
@@ -175,7 +163,7 @@ export class GameScene extends g.Scene {
 
                             this.removeListener();
                             this.removeUpdateHandler();
-                            this.completeGoalGame(collisionable);
+                            this.completeGoal(collisionable);
                             break;
                         }
                     }
@@ -372,13 +360,9 @@ export class GameScene extends g.Scene {
 
             this.removeListener();
             this.removeUpdateHandler();
-            this.effectLayer.children?.forEach(e => {
-                e?.onUpdate.removeAll();
-            });
-            this.blurLayer.children?.forEach(e => {
-                e?.onUpdate.removeAll();
-            });
-            this.finishGame();
+            this.effectLayer.children?.forEach(e => e?.onUpdate.removeAll());
+            this.blurLayer.children?.forEach(e => e?.onUpdate.removeAll());
+            this.showFinishGame();
             this.showSkyHighResult(0, 7);
             this.showResultCollectedStars(1, 7 - 1.5);
         });
@@ -400,7 +384,7 @@ export class GameScene extends g.Scene {
         });
     };
 
-    private completeGoalGame = (tvChan: TvChan): void => {
+    private completeGoal = (tvChan: TvChan): void => {
         let next: number = 5;
         const updateBlessingHandler = (): void => {
             if (g.game.age % next === 0) {
@@ -437,10 +421,10 @@ export class GameScene extends g.Scene {
 
                 this.showSkyHighResult(0, 10);
                 this.showResultCollectedStars(1, 10 - 1.5);
-                this.showLabel(`GOAL BONUS    ${GameScene.COMPLETE_GOAL_BONUS_SCORE}`, 3, 5.5);
+                this.showResultLabel(`GOAL BONUS    ${GameScene.COMPLETE_GOAL_BONUS_SCORE}`, 3, 5.5);
 
                 const remainingSec = (" " + Math.ceil(this.countdownTimer.remainingSec)).slice(-2);
-                this.showLabel(`TIME BONUS  ${remainingSec}*${GameScene.TIME_BONUS_SCORE}`, 4, 4);
+                this.showResultLabel(`TIME BONUS  ${remainingSec}*${GameScene.TIME_BONUS_SCORE}`, 4, 4);
 
                 this.onUpdate.add(updateBlessingHandler);
             });
@@ -448,7 +432,7 @@ export class GameScene extends g.Scene {
             .moveTo(0, moveY, 1000, tl.Easing.easeOutQuint);
     };
 
-    private finishGame = (): void => {
+    private showFinishGame = (): void => {
         const finish = new g.Sprite({
             scene: this,
             parent: this,
@@ -471,17 +455,17 @@ export class GameScene extends g.Scene {
         const max2525Height = 25252.5;
         const result = sinScaleValue * sinScaleValue * max2525Height;
         const fixed = ("      " + result.toFixed(1)).slice(-7);
-        this.showLabel(`MAX SKY HIGH ${fixed}m`, order, y);
+        this.showResultLabel(`MAX SKY HIGH ${fixed}m`, order, y);
     };
 
     private showResultCollectedStars = (order: number, y: number): void => {
         const normalStars = ("      " + Math.ceil(this.collectedStars.normal)).slice(-7);
-        this.showLabel(`NORMAL STARS  ${normalStars}`, order, y);
+        this.showResultLabel(`NORMAL STARS  ${normalStars}`, order, y);
         const rainbowStars = ("      " + Math.ceil(this.collectedStars.rainbow)).slice(-7);
-        this.showLabel(`RAINBOW STARS ${rainbowStars}`, order + 1, y - 1.5);
+        this.showResultLabel(`RAINBOW STARS ${rainbowStars}`, order + 1, y - 1.5);
     };
 
-    private showLabel = (text: string, order: number, y: number): void => {
+    private showResultLabel = (text: string, order: number, y: number): void => {
         const label = new g.Label({
             scene: this,
             font: this.bitmapFont,
