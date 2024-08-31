@@ -23,7 +23,7 @@ interface CollectedStars {
 export class GameScene extends g.Scene {
 
     private static readonly COMPLETE_GOAL_BONUS_SCORE = 1000000;
-    private static readonly TIME_BONUS_SCORE = 10000;
+    private static readonly TIME_BONUS_SCORE = 100000;
     private static readonly BONUS_SCORE_ANIM_DURATION = 5000;
     /** 最大の空の高さのさらに上の余白分 */
     private static readonly SKY_HIGH_MARGIN = 2;
@@ -440,7 +440,7 @@ export class GameScene extends g.Scene {
                 this.showLabel(`GOAL BONUS    ${GameScene.COMPLETE_GOAL_BONUS_SCORE}`, 3, 5.5);
 
                 const remainingSec = (" " + Math.ceil(this.countdownTimer.remainingSec)).slice(-2);
-                this.showLabel(`TIME BONUS ${remainingSec} * ${GameScene.TIME_BONUS_SCORE}`, 4, 4);
+                this.showLabel(`TIME BONUS  ${remainingSec}*${GameScene.TIME_BONUS_SCORE}`, 4, 4);
 
                 this.onUpdate.add(updateBlessingHandler);
             });
