@@ -114,6 +114,8 @@ export class TitleScene extends g.Scene {
         startButton.onClick = (_button => {
             if (this.countdownTimer.stop()) {
                 this.isFinish = true;
+                startButton.onPointDown.removeAll();
+                startButton.onPointUp.removeAll();
             }
         });
         layer.append(startButton);
