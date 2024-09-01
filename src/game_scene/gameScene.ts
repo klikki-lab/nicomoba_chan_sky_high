@@ -57,7 +57,7 @@ export class GameScene extends g.Scene {
             game: g.game,
             assetIds: [
                 "nicomoba_chan", "tv_chan", "img_star", "img_rainbow_star", "img_halo",
-                "img_landscape", "img_start", "img_finish", "img_goal", "img_font", "font_glyphs",
+                "img_landscape", "img_start", "img_finish", "img_congrats", "img_font", "font_glyphs",
                 "nc82082_the_desired_future_edited", "nc82081_beautiful_night", "nc278695_bell",
             ],
         });
@@ -405,17 +405,17 @@ export class GameScene extends g.Scene {
                 this.asset.getAudioById("nc82082_the_desired_future_edited").stop();
                 this.asset.getAudioById("nc82081_beautiful_night").play();
 
-                const goal = new g.Sprite({
+                const congrats = new g.Sprite({
                     scene: this,
-                    src: this.asset.getImageById("img_goal"),
+                    src: this.asset.getImageById("img_congrats"),
                     anchorX: 0.5,
                     anchorY: 0.5,
                     opacity: 0,
                 });
-                goal.moveTo(g.game.width * 0.5, this.camera.y - goal.height * .5);
-                this.append(goal);
-                new tl.Timeline(this).create(goal)
-                    .moveY(this.camera.y + goal.height * .75, 1000, tl.Easing.easeOutQuint)
+                congrats.moveTo(g.game.width * 0.5, this.camera.y - congrats.height * .5);
+                this.append(congrats);
+                new tl.Timeline(this).create(congrats)
+                    .moveY(this.camera.y + congrats.height, 1000, tl.Easing.easeOutQuint)
                     .con()
                     .to({ opacity: .8 }, 1000, tl.Easing.easeOutQuint);
 
