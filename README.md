@@ -31,12 +31,12 @@ Akashic Engine を使用したゲームです。
  ただし、すべての音声ファイルと一部の画像ファイルはニコニ・コモンズからダウンロードしたものです。  
  詳細については個別のページをご覧ください。
 
- - ニコモバちゃん
+ - ニコモバちゃん 
 https://commons.nicovideo.jp/works/nc16919
 - ニコニコテレビちゃん【ver.2.0】
 https://commons.nicovideo.jp/works/nc177467
 - 【ニコ素材】ほのぼの「望んだ未来」
-https://commons.nicovideo.jp/works/nc82082
+https://commons.nicovideo.jp/works/nc82082 - 曲終わりのループ、フェードアウトの改変あり
 - 【ニコ素材】ほのぼの「美しい夜」
 https://commons.nicovideo.jp/works/nc82081
 - 【効果音ラボ】鈴を鳴らす（シャン。残響入り）
