@@ -111,11 +111,11 @@ export class TitleScene extends g.Scene {
         const startButton = new Button(this, "img_start_button");
         startButton.x = g.game.width - startButton.width - startButton.height * 0.5;
         startButton.y = g.game.height - startButton.height * 1.5;
-        startButton.onClick = (_button => {
+        startButton.onClick = (button => {
             if (this.countdownTimer.stop()) {
                 this.isFinish = true;
-                startButton.onPointDown.removeAll();
-                startButton.onPointUp.removeAll();
+                button.onPointDown.removeAll();
+                button.onPointUp.removeAll();
             }
         });
         layer.append(startButton);
