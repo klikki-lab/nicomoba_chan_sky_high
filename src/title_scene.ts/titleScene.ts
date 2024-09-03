@@ -164,7 +164,7 @@ export class TitleScene extends CommonScene {
     private mouseMove = (ev: MouseEvent) => { this.nicomobaChan.move(ev.clientX); }
 
     private updateHandler = (): void | boolean => {
-        //this.countdownTimer.update();
+        this.countdownTimer.update();
         if (this.isFinish) {
             this.onPointDownCapture.remove(this.pointDownHandler);
             this.onPointMoveCapture.remove(this.pointMoveHandler);
