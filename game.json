@@ -101,11 +101,6 @@
 			"width": 692,
 			"height": 271
 		},
-		"custonLoadingScene": {
-			"type": "script",
-			"path": "script/common/custonLoadingScene.js",
-			"global": true
-		},
 		"img_to_start": {
 			"type": "image",
 			"path": "image/img_to_start.png",
@@ -255,6 +250,21 @@
 			"path": "image/img_retry_button.png",
 			"width": 516,
 			"height": 96
+		},
+		"commonScene": {
+			"type": "script",
+			"path": "script/common/commonScene.js",
+			"global": true
+		},
+		"customLoadingScene": {
+			"type": "script",
+			"path": "script/common/customLoadingScene.js",
+			"global": true
+		},
+		"sceneDuration": {
+			"type": "script",
+			"path": "script/common/sceneDuration.js",
+			"global": true
 		}
 	},
 	"moduleMainScripts": {
