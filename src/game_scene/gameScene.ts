@@ -14,13 +14,17 @@ import { RainbowStar } from "./star/rainbowStar";
 import { TvChan } from "./star/tvChan";
 import { Collisionable } from "./star/collisionable";
 import { PopupScore } from "./effect/popupScore";
+import { Button } from "../common/button";
+import { TitleScene } from "../title_scene.ts/titleScene";
+import { CommonScene } from "../common/commonScene";
+import { SceneDuration } from "../common/sceneDuration";
 
 interface CollectedStars {
     normal: number;
     rainbow: number;
 }
 
-export class GameScene extends g.Scene {
+export class GameScene extends CommonScene {
 
     private static readonly COMPLETE_GOAL_BONUS_SCORE = 1000000;
     private static readonly TIME_BONUS_SCORE = 100000;
@@ -52,12 +56,12 @@ export class GameScene extends g.Scene {
     private collectedStars: CollectedStars = { normal: 0, rainbow: 0 };
     private isCompleteGoal: boolean = false;
 
-    constructor(_param: GameMainParameterObject, private timeLimit: number) {
+    constructor(private _param: GameMainParameterObject, private timeLimit: number) {
         super({
             game: g.game,
             assetIds: [
-                "nicomoba_chan", "tv_chan", "img_star", "img_rainbow_star", "img_halo",
-                "img_landscape", "img_start", "img_finish", "img_congrats", "img_font", "font_glyphs",
+                "nicomoba_chan", "tv_chan", "img_star", "img_rainbow_star", "img_halo", "img_landscape",
+                "img_start", "img_finish", "img_congrats", "img_font", "font_glyphs", "img_retry_button",
                 "nc82082_the_desired_future_edited", "nc82081_beautiful_night", "nc278695_bell",
             ],
         });
@@ -365,6 +369,8 @@ export class GameScene extends g.Scene {
             this.showFinishGame();
             this.showSkyHighResult(0, 7);
             this.showResultCollectedStars(1, 7 - 1.5);
+
+            //this.showRetryButton(2000);
         });
     };
 
@@ -422,11 +428,11 @@ export class GameScene extends g.Scene {
                 this.showSkyHighResult(0, 10);
                 this.showResultCollectedStars(1, 10 - 1.5);
                 this.showResultLabel(`GOAL BONUS    ${GameScene.COMPLETE_GOAL_BONUS_SCORE}`, 3, 5.5);
-
                 const remainingSec = (" " + Math.ceil(this.countdownTimer.remainingSec)).slice(-2);
                 this.showResultLabel(`TIME BONUS  ${remainingSec}*${GameScene.TIME_BONUS_SCORE}`, 4, 4);
-
                 this.onUpdate.add(updateBlessingHandler);
+
+                //this.showRetryButton(2000);
             });
         this.timeline.create(this.hudLayer)
             .moveTo(0, moveY, 1000, tl.Easing.easeOutQuint);
@@ -463,6 +469,32 @@ export class GameScene extends g.Scene {
         this.showResultLabel(`NORMAL STARS  ${normalStars}`, order, y);
         const rainbowStars = ("      " + Math.ceil(this.collectedStars.rainbow)).slice(-7);
         this.showResultLabel(`RAINBOW STARS ${rainbowStars}`, order + 1, y - 1.5);
+    };
+
+    private showRetryButton = (duration: number): void => {
+        const retryButton = new Button(this, "img_retry_button");
+        retryButton.moveTo(32, this.camera.y + g.game.height - retryButton.height * 2);
+        retryButton.opacity = 0;
+        retryButton.hide();
+        retryButton.onClick = (button => {
+            this.asset.getAudioById("nc82082_the_desired_future_edited").stop();
+            this.asset.getAudioById("nc82081_beautiful_night").stop();
+            button.onPointDown.removeAll();
+            button.onPointUp.removeAll();
+
+            this.camera.y = 0;
+            this.camera.modified();
+
+            const titleScene = new TitleScene(SceneDuration.TITLE);
+            titleScene.onFinish = (): void => g.game.replaceScene(new GameScene(this._param, SceneDuration.GAME));
+            g.game.replaceScene(titleScene);
+        });
+        this.append(retryButton);
+
+        new tl.Timeline(this).create(retryButton)
+            .wait(duration)
+            .call(() => retryButton.show())
+            .fadeIn(1000, tl.Easing.easeOutQuint);
     };
 
     private showResultLabel = (text: string, order: number, y: number): void => {

@@ -7,14 +7,15 @@ import { Star } from "../game_scene/star/star";
 import { Collider } from "../common/collider";
 import { SplashFragments } from "../game_scene/effect/splashFragments";
 import { Background } from "../game_scene/background";
+import { CommonScene } from "../common/commonScene";
 
-export class TitleScene extends g.Scene {
+export class TitleScene extends CommonScene {
 
     private countdownTimer: CountdownTimer;
     private nicomobaChan: NicomobaChan;
     private isFinish: boolean = false;
 
-    constructor(private timeLimit: number, private onFinish: () => void) {
+    constructor(private timeLimit: number) {
         super({
             game: g.game,
             assetIds: [
@@ -150,12 +151,12 @@ export class TitleScene extends g.Scene {
             });
     };
 
-    private pointDownHandler = (ev: g.PointDownEvent) => {
+    private pointDownHandler = (ev: g.PointDownEvent): void => {
         if (ev.target instanceof Button) return;
         this.nicomobaChan.jump(ev.point);
     };
 
-    private pointMoveHandler = (ev: g.PointMoveEvent) => {
+    private pointMoveHandler = (ev: g.PointMoveEvent): void => {
         if (ev.target instanceof Button) return;
         this.nicomobaChan.move(ev.point.x + ev.startDelta.x);
     };
@@ -163,12 +164,12 @@ export class TitleScene extends g.Scene {
     private mouseMove = (ev: MouseEvent) => { this.nicomobaChan.move(ev.clientX); }
 
     private updateHandler = (): void | boolean => {
-        this.countdownTimer.update();
+        //this.countdownTimer.update();
         if (this.isFinish) {
             this.onPointDownCapture.remove(this.pointDownHandler);
             this.onPointMoveCapture.remove(this.pointMoveHandler);
             window?.removeEventListener('mousemove', this.mouseMove)
-            this.onFinish();
+            this._onFinish?.();
             return true;
         }
     };
