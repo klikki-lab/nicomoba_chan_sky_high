@@ -249,6 +249,12 @@
 			"path": "image/img_congrats.png",
 			"width": 1206,
 			"height": 120
+		},
+		"img_retry_button": {
+			"type": "image",
+			"path": "image/img_retry_button.png",
+			"width": 516,
+			"height": 96
 		}
 	},
 	"moduleMainScripts": {
