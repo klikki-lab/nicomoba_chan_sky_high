@@ -32,7 +32,7 @@ export class GameScene extends CommonScene {
     /** 最大の空の高さのさらに上の余白分 */
     private static readonly SKY_HIGH_MARGIN = 2;
     /** 最大の空の高さ */
-    private static readonly MAX_SKY_HIGH = 50;
+    private static readonly MAX_SKY_HIGH = 50;//50
     /** デフォルトの星間距離 */
     private static readonly DEFAULT_STAR_DISTANCE = 4;
     /** 登るごとにデフォルトとレンジを合わせた星間距離に近づく（徐々に離れていく） */
@@ -61,7 +61,8 @@ export class GameScene extends CommonScene {
             game: g.game,
             assetIds: [
                 "nicomoba_chan", "tv_chan", "img_star", "img_rainbow_star", "img_halo", "img_landscape",
-                "img_start", "img_finish", "img_congrats", "img_font", "font_glyphs", "img_retry_button",
+                "img_start", "img_finish", "img_congrats", "img_speech_bubble", "img_last_speech",
+                "img_font", "font_glyphs", "img_retry_button",
                 "nc82082_the_desired_future_edited", "nc82081_beautiful_night", "nc278695_bell",
             ],
         });
@@ -98,14 +99,14 @@ export class GameScene extends CommonScene {
             anchorY: 0.5,
             opacity: 0.0,
         });
-        start.moveTo(g.game.width * 0.5, this.camera.y - start.height * 0.5);
+        start.moveTo(g.game.width * 0.5, this.camera.y + start.height * 2);
         this.append(start);
         this.timeline.create(start)
             .moveY(this.camera.y + g.game.height * 0.5, 250, tl.Easing.easeOutQuint)
             .con()
-            .to({ opacity: 0.9 }, 250, tl.Easing.easeOutQuint)
+            .to({ opacity: 0.75 }, 250, tl.Easing.easeOutQuint)
             .wait(800)
-            .moveY(this.camera.y - start.height * 0.5, 250, tl.Easing.easeInQuint)
+            .moveY(this.camera.y + start.height * 2, 250, tl.Easing.easeInQuint)
             .con()
             .to({ opacity: 0.0 }, 250, tl.Easing.easeInQuint)
             .call(() => {
@@ -404,6 +405,34 @@ export class GameScene extends CommonScene {
             }
         };
 
+        const showMessage = (): void => {
+            const pos = this.nicomobaChan.x < g.game.width * .5 ? -1 : 1;
+            const bubble = new g.Sprite({
+                scene: this,
+                parent: this,
+                src: this.asset.getImageById("img_speech_bubble"),
+                anchorX: 0.5,
+                anchorY: 0.5,
+                opacity: 0,
+                scaleX: -pos,
+            });
+            bubble.moveTo(tvChan.x - bubble.width * pos * 1.25, tvChan.y - 64);
+
+            const speech = new g.Sprite({
+                scene: this,
+                src: this.asset.getImageById("img_last_speech"),
+                parent: this,
+                anchorX: 0.5,
+                anchorY: 0.5,
+                opacity: 0,
+                x: bubble.x,
+                y: bubble.y,
+            });
+
+            new tl.Timeline(this).create(bubble).to({ opacity: 0.5 }, 500, tl.Easing.easeOutQuint);
+            new tl.Timeline(this).create(speech).to({ opacity: 0.75 }, 500, tl.Easing.easeOutQuint);
+        };
+
         const moveY = tvChan.y - g.game.height * 0.5;
         this.timeline.create(this.camera)
             .moveTo(0, moveY, 1000, tl.Easing.easeOutQuint)
@@ -423,7 +452,12 @@ export class GameScene extends CommonScene {
                 new tl.Timeline(this).create(congrats)
                     .moveY(this.camera.y + congrats.height, 1000, tl.Easing.easeOutQuint)
                     .con()
-                    .to({ opacity: .8 }, 1000, tl.Easing.easeOutQuint);
+                    .to({ opacity: .8 }, 1000, tl.Easing.easeOutQuint)
+                    .call(() => {
+                        showMessage();
+                        new Halo(this, this.effectLayer, { x: this.nicomobaChan.x, y: this.nicomobaChan.y - this.nicomobaChan.height * .5 })
+                            .scale(2);
+                    });
 
                 this.showSkyHighResult(0, 10);
                 this.showResultCollectedStars(1, 10 - 1.5);
