@@ -18,6 +18,7 @@ import { Button } from "../common/button";
 import { TitleScene } from "../title_scene.ts/titleScene";
 import { CommonScene } from "../common/commonScene";
 import { SceneDuration } from "../common/sceneDuration";
+import { Util } from "../common/util";
 
 interface CollectedStars {
     normal: number;
@@ -371,7 +372,9 @@ export class GameScene extends CommonScene {
             this.showSkyHighResult(0, 7);
             this.showResultCollectedStars(1, 7 - 1.5);
 
-            //this.showRetryButton(2000);
+            if (!Util.isNicoNicoDomain()) {
+                this.showRetryButton(2000);
+            }
         });
     };
 
@@ -455,8 +458,9 @@ export class GameScene extends CommonScene {
                     .to({ opacity: .8 }, 1000, tl.Easing.easeOutQuint)
                     .call(() => {
                         showMessage();
-                        new Halo(this, this.effectLayer, { x: this.nicomobaChan.x, y: this.nicomobaChan.y - this.nicomobaChan.height * .5 })
-                            .scale(2);
+
+                        const pos = { x: this.nicomobaChan.x, y: this.nicomobaChan.y - this.nicomobaChan.height * .5 };
+                        new Halo(this, this.effectLayer, pos).scale(2);
                     });
 
                 this.showSkyHighResult(0, 10);
@@ -466,7 +470,9 @@ export class GameScene extends CommonScene {
                 this.showResultLabel(`TIME BONUS  ${remainingSec}*${GameScene.TIME_BONUS_SCORE}`, 4, 4);
                 this.onUpdate.add(updateBlessingHandler);
 
-                //this.showRetryButton(2000);
+                if (!Util.isNicoNicoDomain()) {
+                    this.showRetryButton(2000);
+                }
             });
         this.timeline.create(this.hudLayer)
             .moveTo(0, moveY, 1000, tl.Easing.easeOutQuint);

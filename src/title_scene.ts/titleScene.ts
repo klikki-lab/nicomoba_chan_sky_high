@@ -8,10 +8,11 @@ import { Collider } from "../common/collider";
 import { SplashFragments } from "../game_scene/effect/splashFragments";
 import { Background } from "../game_scene/background";
 import { CommonScene } from "../common/commonScene";
+import { Util } from "../common/util";
 
 export class TitleScene extends CommonScene {
 
-    private countdownTimer: CountdownTimer;
+    private countdownTimer: CountdownTimer | undefined = undefined;
     private nicomobaChan: NicomobaChan;
     private isFinish: boolean = false;
 
@@ -58,37 +59,9 @@ export class TitleScene extends CommonScene {
         this.append(title);
 
         const layer = new g.E({ scene: this, parent: this, y: -16, opacity: 0 });
-
-        const toStart = new g.Sprite({
-            scene: this,
-            src: this.asset.getImageById("img_to_start"),
-            anchorX: 0.5,
-            anchorY: 0.5,
-        });
-        toStart.moveTo(g.game.width - toStart.width * 1.25, toStart.height);
-        layer.append(toStart);
-
-        const bitmapFont = new g.BitmapFont({
-            src: this.asset.getImageById("img_font"),
-            glyphInfo: this.asset.getJSONContentById("font_glyphs"),
-        });
-        const timeLabel = new g.Label({
-            scene: this,
-            font: bitmapFont,
-            text: this.timeLimit.toString(),
-            anchorX: 0.5,
-            anchorY: 0.5,
-        });
-        timeLabel.x = toStart.x + toStart.width * 0.5 + timeLabel.width;
-        timeLabel.y = toStart.y;
-        layer.append(timeLabel);
-
-        this.countdownTimer = new CountdownTimer(this.timeLimit);
-        this.countdownTimer.onTick = (remainingSec => {
-            timeLabel.text = remainingSec.toString();
-            timeLabel.invalidate();
-        });
-        this.countdownTimer.onFinish = (() => this.isFinish = true);
+        if (Util.isNicoNicoDomain()) {
+            this.countdownTimer = this.createCountdownTimer(layer);
+        }
 
         const description = new g.Sprite({
             scene: this,
@@ -113,7 +86,7 @@ export class TitleScene extends CommonScene {
         startButton.x = g.game.width - startButton.width - startButton.height * 0.5;
         startButton.y = g.game.height - startButton.height * 1.5;
         startButton.onClick = (button => {
-            if (this.countdownTimer.stop()) {
+            if (!this.countdownTimer || this.countdownTimer.stop()) {
                 this.isFinish = true;
                 button.onPointDown.removeAll();
                 button.onPointUp.removeAll();
@@ -164,7 +137,7 @@ export class TitleScene extends CommonScene {
     private mouseMove = (ev: MouseEvent) => { this.nicomobaChan.move(ev.clientX); }
 
     private updateHandler = (): void | boolean => {
-        this.countdownTimer.update();
+        this.countdownTimer?.update();
         if (this.isFinish) {
             this.onPointDownCapture.remove(this.pointDownHandler);
             this.onPointMoveCapture.remove(this.pointMoveHandler);
@@ -195,5 +168,39 @@ export class TitleScene extends CommonScene {
             detectCollision(nicomobaChan);
         });
         return nicomobaChan;
-    }
+    };
+
+    private createCountdownTimer = (layer: g.E): CountdownTimer => {
+        const toStart = new g.Sprite({
+            scene: this,
+            src: this.asset.getImageById("img_to_start"),
+            anchorX: 0.5,
+            anchorY: 0.5,
+        });
+        toStart.moveTo(g.game.width - toStart.width * 1.25, toStart.height);
+        layer.append(toStart);
+
+        const bitmapFont = new g.BitmapFont({
+            src: this.asset.getImageById("img_font"),
+            glyphInfo: this.asset.getJSONContentById("font_glyphs"),
+        });
+        const timeLabel = new g.Label({
+            scene: this,
+            font: bitmapFont,
+            text: this.timeLimit.toString(),
+            anchorX: 0.5,
+            anchorY: 0.5,
+        });
+        timeLabel.x = toStart.x + toStart.width * 0.5 + timeLabel.width;
+        timeLabel.y = toStart.y;
+        layer.append(timeLabel);
+
+        const countdownTimer = new CountdownTimer(this.timeLimit);
+        countdownTimer.onTick = (remainingSec => {
+            timeLabel.text = remainingSec.toString();
+            timeLabel.invalidate();
+        });
+        countdownTimer.onFinish = (() => this.isFinish = true);
+        return countdownTimer;
+    };
 }
