@@ -134,7 +134,7 @@ export class TitleScene extends CommonScene {
         this.nicomobaChan.move(ev.point.x + ev.startDelta.x);
     };
 
-    private mouseMoveListener = (ev: MouseEvent) => { this.nicomobaChan.move(ev.clientX); }
+    private mouseMoveListener = (ev: MouseEvent) => { this.nicomobaChan.move(ev.offsetX); }
 
     private updateHandler = (): void | boolean => {
         this.countdownTimer?.update();

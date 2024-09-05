@@ -125,7 +125,7 @@ export class GameScene extends CommonScene {
 
     private pointMoveHandler = (ev: g.PointMoveEvent): void => { this.nicomobaChan.move(ev.point.x + ev.startDelta.x); };
 
-    private mouseMoveListener = (ev: MouseEvent): void => { this.nicomobaChan.move(ev.clientX); };
+    private mouseMoveListener = (ev: MouseEvent): void => { this.nicomobaChan.move(ev.offsetX); };
 
     private createNicomobaChan = (): void => {
         const detectCollision = (nicomobaChan: NicomobaChan): void => {
