@@ -8,7 +8,7 @@ import { Collider } from "../common/collider";
 import { SplashFragments } from "../game_scene/effect/splashFragments";
 import { Background } from "../game_scene/background";
 import { CommonScene } from "../common/commonScene";
-import { Util } from "../common/util";
+import { WindowUtil } from "../common/windowUtil";
 
 export class TitleScene extends CommonScene {
 
@@ -59,7 +59,7 @@ export class TitleScene extends CommonScene {
         this.append(title);
 
         const layer = new g.E({ scene: this, parent: this, y: -16, opacity: 0 });
-        if (Util.isNicoNicoDomain()) {
+        if (WindowUtil.isNicoNicoDomain()) {
             this.countdownTimer = this.createCountdownTimer(layer);
         }
 

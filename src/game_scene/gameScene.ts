@@ -18,7 +18,7 @@ import { Button } from "../common/button";
 import { TitleScene } from "../title_scene.ts/titleScene";
 import { CommonScene } from "../common/commonScene";
 import { SceneDuration } from "../common/sceneDuration";
-import { Util } from "../common/util";
+import { WindowUtil } from "../common/windowUtil";
 
 interface CollectedStars {
     normal: number;
@@ -33,7 +33,7 @@ export class GameScene extends CommonScene {
     /** 最大の空の高さのさらに上の余白分 */
     private static readonly SKY_HIGH_MARGIN = 2;
     /** 最大の空の高さ */
-    private static readonly MAX_SKY_HIGH = 50;//50
+    private static readonly MAX_SKY_HIGH = 50;
     /** デフォルトの星間距離 */
     private static readonly DEFAULT_STAR_DISTANCE = 4;
     /** 登るごとにデフォルトとレンジを合わせた星間距離に近づく（徐々に離れていく） */
@@ -372,7 +372,7 @@ export class GameScene extends CommonScene {
             this.showSkyHighResult(0, 7);
             this.showResultCollectedStars(1, 7 - 1.5);
 
-            if (!Util.isNicoNicoDomain()) {
+            if (!WindowUtil.isNicoNicoDomain()) {
                 this.showRetryButton(2000);
             }
         });
@@ -470,7 +470,7 @@ export class GameScene extends CommonScene {
                 this.showResultLabel(`TIME BONUS  ${remainingSec}*${GameScene.TIME_BONUS_SCORE}`, 4, 4);
                 this.onUpdate.add(updateBlessingHandler);
 
-                if (!Util.isNicoNicoDomain()) {
+                if (!WindowUtil.isNicoNicoDomain()) {
                     this.showRetryButton(2000);
                 }
             });

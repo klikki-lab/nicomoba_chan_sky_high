@@ -1,4 +1,4 @@
-export module Util {
+export module WindowUtil {
 
     export function isNicoNicoDomain(): boolean {
         try {
