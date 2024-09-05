@@ -8,4 +8,12 @@ export module WindowUtil {
             return false;
         }
     }
+
+    export function removeMouseMoveEventListener(listener: (ev: MouseEvent) => void): void {
+        window?.removeEventListener('mousemove', listener);
+    }
+
+    export function addMouseMoveEventListener(listener: (ev: MouseEvent) => void): void {
+        window?.addEventListener('mousemove', listener);
+    }
 }

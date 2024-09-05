@@ -266,11 +266,6 @@
 			"path": "script/common/sceneDuration.js",
 			"global": true
 		},
-		"util": {
-			"type": "script",
-			"path": "script/common/util.js",
-			"global": true
-		},
 		"img_last_speech": {
 			"type": "image",
 			"path": "image/img_last_speech.png",
@@ -282,6 +277,11 @@
 			"path": "image/img_speech_bubble.png",
 			"width": 198,
 			"height": 110
+		},
+		"windowUtil": {
+			"type": "script",
+			"path": "script/common/windowUtil.js",
+			"global": true
 		}
 	},
 	"moduleMainScripts": {

@@ -114,7 +114,7 @@ export class GameScene extends CommonScene {
                 this.onUpdate.add(this.updateCountdownHandler);
                 this.onPointDownCapture.add(this.pointDownHandler);
                 this.onPointMoveCapture.add(this.pointMoveHandler);
-                this.addMouseMoveListener();
+                WindowUtil.addMouseMoveEventListener(this.mouseMoveListener);
                 start.destroy();
             });
     };
@@ -124,10 +124,6 @@ export class GameScene extends CommonScene {
     private pointDownHandler = (ev: g.PointDownEvent): void => { this.nicomobaChan.jump(ev.point); };
 
     private pointMoveHandler = (ev: g.PointMoveEvent): void => { this.nicomobaChan.move(ev.point.x + ev.startDelta.x); };
-
-    private addMouseMoveListener = (): void => { window?.addEventListener('mousemove', this.mouseMoveListener); };
-
-    private removeMouseMoveListener = (): void => { window?.addEventListener('mousemove', this.mouseMoveListener); };
 
     private mouseMoveListener = (ev: MouseEvent): void => { this.nicomobaChan.move(ev.clientX); };
 
@@ -381,7 +377,7 @@ export class GameScene extends CommonScene {
     private removeListener = (): void => {
         this.onPointDownCapture.remove(this.pointDownHandler);
         this.onPointMoveCapture.remove(this.pointMoveHandler);
-        this.removeMouseMoveListener();
+        WindowUtil.removeMouseMoveEventListener(this.mouseMoveListener);
     };
 
     private removeUpdateHandler = (): void => {

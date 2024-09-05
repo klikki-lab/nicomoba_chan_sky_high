@@ -119,7 +119,7 @@ export class TitleScene extends CommonScene {
                         this.onUpdate.add(this.updateHandler);
                         this.onPointDownCapture.add(this.pointDownHandler);
                         this.onPointMoveCapture.add(this.pointMoveHandler);
-                        window?.addEventListener('mousemove', this.mouseMove);
+                        WindowUtil.addMouseMoveEventListener(this.mouseMoveListener);
                     });
             });
     };
@@ -134,14 +134,14 @@ export class TitleScene extends CommonScene {
         this.nicomobaChan.move(ev.point.x + ev.startDelta.x);
     };
 
-    private mouseMove = (ev: MouseEvent) => { this.nicomobaChan.move(ev.clientX); }
+    private mouseMoveListener = (ev: MouseEvent) => { this.nicomobaChan.move(ev.clientX); }
 
     private updateHandler = (): void | boolean => {
         this.countdownTimer?.update();
         if (this.isFinish) {
             this.onPointDownCapture.remove(this.pointDownHandler);
             this.onPointMoveCapture.remove(this.pointMoveHandler);
-            window?.removeEventListener('mousemove', this.mouseMove)
+            WindowUtil.removeMouseMoveEventListener(this.mouseMoveListener)
             this._onFinish?.();
             return true;
         }
