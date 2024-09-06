@@ -432,9 +432,9 @@ export class GameScene extends CommonScene {
             new tl.Timeline(this).create(speech).to({ opacity: 0.75 }, 500, tl.Easing.easeOutQuint);
         };
 
-        const moveY = tvChan.y - g.game.height * 0.5;
+        const destY = tvChan.y - g.game.height * 0.5;
         this.timeline.create(this.camera)
-            .moveTo(0, moveY, 1000, tl.Easing.easeOutQuint)
+            .moveTo(0, destY, 1000, tl.Easing.easeOutQuint)
             .call(() => {
                 this.asset.getAudioById("nc82082_the_desired_future_edited").stop();
                 this.asset.getAudioById("nc82081_beautiful_night").play();
@@ -471,7 +471,7 @@ export class GameScene extends CommonScene {
                 }
             });
         this.timeline.create(this.hudLayer)
-            .moveTo(0, moveY, 1000, tl.Easing.easeOutQuint);
+            .moveTo(0, destY, 1000, tl.Easing.easeOutQuint);
     };
 
     private showFinishGame = (): void => {
