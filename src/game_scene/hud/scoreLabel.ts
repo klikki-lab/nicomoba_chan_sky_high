@@ -27,7 +27,7 @@ export class ScoreLabel extends g.Label {
 
     addScore = (score: number): void => { this.setText(this.clamp(score)); };
 
-    addScoreAnimation = (score: number, duration: number): void => {
+    addScoreWithAnim = (score: number, duration: number): void => {
         const clamped = this.clamp(score);
         new tl.Timeline(this.scene)
             .create(this)

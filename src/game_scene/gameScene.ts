@@ -161,7 +161,7 @@ export class GameScene extends CommonScene {
                             this.isCompleteGoal = true;
                             const remainingSec = Math.ceil(this.countdownTimer.remainingSec);
                             const bosunScore = GameScene.COMPLETE_GOAL_BONUS_SCORE + GameScene.TIME_BONUS_SCORE * remainingSec;
-                            this.scoreLabel.addScoreAnimation(bosunScore, GameScene.BONUS_SCORE_ANIM_DURATION);
+                            this.scoreLabel.addScoreWithAnim(bosunScore, GameScene.BONUS_SCORE_ANIM_DURATION);
 
                             this.removeListener();
                             this.removeUpdateHandler();
