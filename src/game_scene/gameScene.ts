@@ -366,11 +366,10 @@ export class GameScene extends CommonScene {
             this.blurLayer.children?.forEach(e => e?.onUpdate.removeAll());
             this.showFinishGame();
             this.showSkyHighResult(0, 7);
-            this.showResultCollectedStars(1, 7 - 1.5);
-
-            if (!WindowUtil.isNicoNicoDomain()) {
-                this.showRetryButton(2000);
-            }
+            this.showResultCollectedStars(1, 7 - 1.5)
+                .call(() => {
+                    if (!WindowUtil.isNicoNicoDomain()) this.showRetryButton();
+                });
         });
     };
 
@@ -463,12 +462,11 @@ export class GameScene extends CommonScene {
                 this.showResultCollectedStars(1, 10 - 1.5);
                 this.showResultLabel(`GOAL BONUS    ${GameScene.COMPLETE_GOAL_BONUS_SCORE}`, 3, 5.5);
                 const remainingSec = (" " + Math.ceil(this.countdownTimer.remainingSec)).slice(-2);
-                this.showResultLabel(`TIME BONUS  ${remainingSec}*${GameScene.TIME_BONUS_SCORE}`, 4, 4);
+                this.showResultLabel(`TIME BONUS  ${remainingSec}*${GameScene.TIME_BONUS_SCORE}`, 4, 4)
+                    .call(() => {
+                        if (!WindowUtil.isNicoNicoDomain()) this.showRetryButton();
+                    });
                 this.onUpdate.add(updateBlessingHandler);
-
-                if (!WindowUtil.isNicoNicoDomain()) {
-                    this.showRetryButton(2000);
-                }
             });
         this.timeline.create(this.hudLayer)
             .moveTo(0, destY, 1000, tl.Easing.easeOutQuint);
@@ -500,14 +498,33 @@ export class GameScene extends CommonScene {
         this.showResultLabel(`MAX SKY HIGH ${fixed}m`, order, y);
     };
 
-    private showResultCollectedStars = (order: number, y: number): void => {
+    private showResultCollectedStars = (order: number, y: number): tl.Tween => {
         const normalStars = ("      " + Math.ceil(this.collectedStars.normal)).slice(-7);
         this.showResultLabel(`NORMAL STARS  ${normalStars}`, order, y);
         const rainbowStars = ("      " + Math.ceil(this.collectedStars.rainbow)).slice(-7);
-        this.showResultLabel(`RAINBOW STARS ${rainbowStars}`, order + 1, y - 1.5);
+        return this.showResultLabel(`RAINBOW STARS ${rainbowStars}`, order + 1, y - 1.5);
     };
 
-    private showRetryButton = (duration: number): void => {
+    private showResultLabel = (text: string, order: number, y: number): tl.Tween => {
+        const label = new g.Label({
+            scene: this,
+            font: this.bitmapFont,
+            fontSize: this.bitmapFont.size * 0.5,
+            text: text,
+            opacity: 0,
+        });
+        label.x = g.game.width - label.width - label.fontSize;
+        label.y = this.camera.y + g.game.height - label.fontSize * (y - 1);
+        this.append(label);
+
+        return new tl.Timeline(this).create(label)
+            .wait(1000 + order * 250)
+            .moveY(this.camera.y + g.game.height - label.fontSize * y, 1000, tl.Easing.easeOutQuint)
+            .con()
+            .to({ opacity: .75 }, 1000, tl.Easing.easeOutQuint);
+    };
+
+    private showRetryButton = (): void => {
         const retryButton = new Button(this, "img_retry_button");
         retryButton.moveTo(32, this.camera.y + g.game.height - retryButton.height * 2);
         retryButton.opacity = 0;
@@ -528,26 +545,7 @@ export class GameScene extends CommonScene {
         this.append(retryButton);
 
         new tl.Timeline(this).create(retryButton)
-            .wait(duration)
             .call(() => retryButton.show())
-            .fadeIn(1000, tl.Easing.easeOutQuint);
-    };
-
-    private showResultLabel = (text: string, order: number, y: number): void => {
-        const label = new g.Label({
-            scene: this,
-            font: this.bitmapFont,
-            fontSize: this.bitmapFont.size * 0.5,
-            text: text,
-            opacity: 0,
-        });
-        label.x = g.game.width - label.width - label.fontSize;
-        label.y = this.camera.y + g.game.height - label.fontSize * (y - 1);
-        this.append(label);
-        new tl.Timeline(this).create(label)
-            .wait(1000 + order * 250)
-            .moveY(this.camera.y + g.game.height - label.fontSize * y, 1000, tl.Easing.easeOutQuint)
-            .con()
-            .to({ opacity: .75 }, 1000, tl.Easing.easeOutQuint);
+            .fadeIn(500, tl.Easing.easeOutQuint);
     };
 }
