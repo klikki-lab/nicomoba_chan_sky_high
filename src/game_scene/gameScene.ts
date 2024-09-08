@@ -157,11 +157,7 @@ export class GameScene extends CommonScene {
                             break;
                         } else if (collisionable instanceof TvChan) {
                             if (!this.countdownTimer.stop()) break;
-
                             this.isCompleteGoal = true;
-                            const remainingSec = Math.ceil(this.countdownTimer.remainingSec);
-                            const bosunScore = GameScene.COMPLETE_GOAL_BONUS_SCORE + GameScene.TIME_BONUS_SCORE * remainingSec;
-                            this.scoreLabel.addScoreWithAnim(bosunScore, GameScene.BONUS_SCORE_ANIM_DURATION);
 
                             this.removeListener();
                             this.removeUpdateHandler();
@@ -390,6 +386,11 @@ export class GameScene extends CommonScene {
     };
 
     private completeGoal = (tvChan: TvChan): void => {
+        const remainingSec = Math.ceil(this.countdownTimer.remainingSec);
+        const bosunScore = GameScene.COMPLETE_GOAL_BONUS_SCORE + GameScene.TIME_BONUS_SCORE * remainingSec;
+        this.scoreLabel.addScoreWithAnim(bosunScore, GameScene.BONUS_SCORE_ANIM_DURATION)
+            .call(() => { if (!WindowUtil.isNicoNicoDomain()) this.showRetryButton() });
+
         let next: number = 5;
         const updateBlessingHandler = (): void => {
             if (g.game.age % next === 0) {
@@ -463,9 +464,7 @@ export class GameScene extends CommonScene {
                 this.showResultLabel(`GOAL BONUS    ${GameScene.COMPLETE_GOAL_BONUS_SCORE}`, 3, 5.5);
                 const remainingSec = (" " + Math.ceil(this.countdownTimer.remainingSec)).slice(-2);
                 this.showResultLabel(`TIME BONUS  ${remainingSec}*${GameScene.TIME_BONUS_SCORE}`, 4, 4)
-                    .call(() => {
-                        if (!WindowUtil.isNicoNicoDomain()) this.showRetryButton();
-                    });
+
                 this.onUpdate.add(updateBlessingHandler);
             });
         this.timeline.create(this.hudLayer)
