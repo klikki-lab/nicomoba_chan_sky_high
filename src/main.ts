@@ -2,7 +2,7 @@ import { CustomLoadingScene } from "./common/customLoadingScene";
 import { SceneDuration } from "./common/sceneDuration";
 import { GameScene } from "./game_scene/gameScene";
 import { GameMainParameterObject } from "./parameterObject";
-import { TitleScene } from "./title_scene.ts/titleScene";
+import { TitleScene } from "./title_scene/titleScene";
 
 export function main(param: GameMainParameterObject): void {
     g.game.vars.gameState = {

@@ -84,11 +84,6 @@
 			"path": "script/common/button.js",
 			"global": true
 		},
-		"titleScene": {
-			"type": "script",
-			"path": "script/title_scene.ts/titleScene.js",
-			"global": true
-		},
 		"img_description": {
 			"type": "image",
 			"path": "image/img_description.png",
@@ -281,6 +276,11 @@
 		"windowUtil": {
 			"type": "script",
 			"path": "script/common/windowUtil.js",
+			"global": true
+		},
+		"titleScene": {
+			"type": "script",
+			"path": "script/title_scene/titleScene.js",
 			"global": true
 		}
 	},

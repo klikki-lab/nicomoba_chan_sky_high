@@ -15,7 +15,7 @@ import { TvChan } from "./star/tvChan";
 import { Collisionable } from "./star/collisionable";
 import { PopupScore } from "./effect/popupScore";
 import { Button } from "../common/button";
-import { TitleScene } from "../title_scene.ts/titleScene";
+import { TitleScene } from "../title_scene/titleScene";
 import { CommonScene } from "../common/commonScene";
 import { SceneDuration } from "../common/sceneDuration";
 import { WindowUtil } from "../common/windowUtil";
