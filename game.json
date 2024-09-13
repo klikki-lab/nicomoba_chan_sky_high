@@ -277,6 +277,11 @@
 			"type": "script",
 			"path": "script/title_scene/titleScene.js",
 			"global": true
+		},
+		"distantStar": {
+			"type": "script",
+			"path": "script/game_scene/distantStar.js",
+			"global": true
 		}
 	},
 	"moduleMainScripts": {
