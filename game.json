@@ -125,11 +125,6 @@
 			"width": 642,
 			"height": 162
 		},
-		"starTable": {
-			"type": "script",
-			"path": "script/game_scene/starTable.js",
-			"global": true
-		},
 		"tv_chan": {
 			"type": "image",
 			"path": "image/nc177467_tv_chan_ver2.0.png",
