@@ -19,6 +19,7 @@ import { TitleScene } from "../title_scene/titleScene";
 import { CommonScene } from "../common/commonScene";
 import { SceneDuration } from "../common/sceneDuration";
 import { WindowUtil } from "../common/windowUtil";
+import { DistantStar } from "./distantStar";
 
 interface CollectedStars {
     normal: number;
@@ -46,6 +47,7 @@ export class GameScene extends CommonScene {
     private camera: g.Camera2D;
     private timeline: tl.Timeline;
     private nicomobaChan: NicomobaChan;
+    private tvChan: TvChan;
     private backgroundLayer: g.E;
     private starLayer: g.E[] = [];
     private effectLayer: g.E;
@@ -174,7 +176,27 @@ export class GameScene extends CommonScene {
             this.camera.modified();
             this.hudLayer.y = y;
             this.hudLayer.modified();
+            // label.y = y;
+            // label.modified();
         };
+
+        // const label = new g.Label({
+        //     scene: this,
+        //     parent: this,
+        //     font: new g.DynamicFont({
+        //         game: g.game,
+        //         fontFamily: "monospace",
+        //         size: 16,
+        //         fontColor: "white",
+        //     }),
+        //     text: "0m",
+        //     x: 8,
+        //     y: this.camera.y + 8,
+        // });
+        // const debug = (): void => {
+        //     label.text = `${this.adjustSkyHigh().toFixed(1)}m`;
+        //     label.invalidate();
+        // };
 
         this.nicomobaChan = new NicomobaChan(this);
         this.nicomobaChan.groundY = -this.nicomobaChan.height
@@ -185,6 +207,8 @@ export class GameScene extends CommonScene {
             }
             this.blurLayer.append(new NicomobaChanBlur(this, nicomobaChan));
             detectCollision(nicomobaChan);
+
+            //debug();
         });
         this.nicomobaChan.onFalling = ((nicomobaChan: NicomobaChan): void => {
             if (nicomobaChan.y > this.camera.y + g.game.height * 0.5) {
@@ -192,6 +216,8 @@ export class GameScene extends CommonScene {
             }
             this.blurLayer.append(new NicomobaChanBlur(this, nicomobaChan));
             detectCollision(nicomobaChan);
+
+            //debug();
         });
         this.nicomobaChan.onGround = ((nicomobaChan: NicomobaChan, normarizeVelocityY): void => {
             moveCamera(-g.game.height);
@@ -204,6 +230,8 @@ export class GameScene extends CommonScene {
             this.timeline.create(this.hudLayer)
                 .moveBy(0, y, duration1, tl.Easing.linear)
                 .moveBy(0, -y, duration2, tl.Easing.easeOutBounce);
+
+            //debug();
         });
         this.append(this.nicomobaChan);
     };
@@ -211,39 +239,7 @@ export class GameScene extends CommonScene {
     private createSky = (): void => {
         const createDistantStar = (background: Background, index: number): void => {
             for (let i = 0; i < index * 2; i++) {
-                const size = g.game.random.generate() * 2 + 1;
-                const offsetX = g.game.width * 0.05;
-                const offsetY = g.game.height * 0.05;
-                const distantStar = new g.FilledRect({
-                    scene: this,
-                    width: size,
-                    height: size,
-                    cssColor: "white",
-                    anchorX: 0.5,
-                    anchorY: 0.5,
-                    opacity: 0.75,
-                    angle: g.game.random.generate() * 360,
-                    x: g.game.random.generate() * (g.game.width * 0.9) + offsetX,
-                    y: g.game.random.generate() * (g.game.height * 0.9) + offsetY,
-                });
-                if (size > 2.8) {
-                    const lightSize = g.game.random.generate() * 3 + size * 4
-                    for (let j = 0; j < 2; j++) {
-                        new g.FilledRect({
-                            scene: this,
-                            parent: distantStar,
-                            width: j * lightSize + size / 2,
-                            height: (1 - j) * lightSize + size / 2,
-                            cssColor: "white",
-                            anchorX: 0.5,
-                            anchorY: 0.5,
-                            opacity: 0.5,
-                            x: distantStar.width / 2,
-                            y: distantStar.height / 2,
-                        });
-                    }
-                }
-                background.append(distantStar);
+                background.append(new DistantStar(this));
             }
         };
 
@@ -304,8 +300,8 @@ export class GameScene extends CommonScene {
                 const y = -g.game.height * i - g.game.height * 0.5;
                 const halo = new Halo(this, this.effectLayer, { x: x, y: y });
                 halo.scale(6);
-                const tvChan = new TvChan(this, halo, { x: x, y: y });
-                this.starLayer[i].append(tvChan);
+                this.tvChan = new TvChan(this, halo, { x: x, y: y });
+                this.starLayer[i].append(this.tvChan);
                 continue;
             }
 
@@ -488,13 +484,26 @@ export class GameScene extends CommonScene {
     };
 
     private showSkyHighResult = (order: number, y: number): void => {
-        const maxSkyHigh = g.game.height * GameScene.MAX_SKY_HIGH;
-        const normalized = Math.min(1, this.nicomobaChan.maxSkyHigh / maxSkyHigh);
-        const sinScaleValue = Math.sin(normalized * Math.PI / 2);
-        const max2525Height = 25252.5;
-        const result = sinScaleValue * sinScaleValue * max2525Height;
-        const fixed = ("      " + result.toFixed(1)).slice(-7);
+        const fixed = ("      " + this.adjustSkyHigh().toFixed(1)).slice(-7);
         this.showResultLabel(`MAX SKY HIGH ${fixed}m`, order, y);
+    };
+
+    private adjustSkyHigh = (maxSkyHigh: number = this.nicomobaChan.maxSkyHigh): number => {
+        const max2525Height = 25252.5;
+        const top = this.tvChan.y - this.tvChan.height * 0.5;
+        const bottom = this.tvChan.y + this.tvChan.height * 0.5;
+
+        if (maxSkyHigh >= top && maxSkyHigh <= bottom) {
+            return max2525Height;
+        }
+
+        const normalized = maxSkyHigh / bottom;
+        if (normalized < 1 && normalized >= 0.95) {
+            return normalized * max2525Height;
+        } else if (normalized < 1) {
+            return Math.pow(normalized, 2) * max2525Height;
+        }
+        return max2525Height + Math.pow(normalized, 0.5) * 8;
     };
 
     private showResultCollectedStars = (order: number, y: number): tl.Tween => {

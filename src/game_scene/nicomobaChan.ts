@@ -123,8 +123,8 @@ export class NicomobaChan extends g.Sprite {
 
         this.setScele(1.25, 0.75);
         this.modified();
-        this.canJump = false;
         this.dest = dest;
+        this.canJump = false;
         this.velocity.y = -NicomobaChan.JUMP_ACCELERATION;
     };
 
@@ -132,9 +132,7 @@ export class NicomobaChan extends g.Sprite {
 
     get prev(): g.CommonOffset { return this._prev; }
 
-    currentSkyHigh = (): number => Math.abs(this.y - this._groundY);
-
-    get maxSkyHigh(): number { return Math.abs(this._maxskyHigh - this._groundY); };
+    get maxSkyHigh(): number { return this._maxskyHigh + this._groundY; };
 
     set groundY(groundY: number) {
         this._groundY = groundY;
