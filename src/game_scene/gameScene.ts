@@ -105,19 +105,8 @@ export class GameScene extends CommonScene {
         start.moveTo(g.game.width * 0.5, this.camera.y + start.height * 2);
         this.append(start);
 
-        const offsetY = Star.SIZE * .2;
-        const fadeInAnim = (entity: g.E): void => {
-            this.timeline.create(entity)
-                .call(() => {
-                    entity.y -= offsetY;
-                    entity.modified();
-                })
-                .moveY(entity.y + offsetY, 1000, tl.Easing.easeOutQuint)
-                .con()
-                .fadeIn(1000, tl.Easing.easeOutQuint);
-        };
-        this.starLayer[0].children.forEach(star => fadeInAnim(star));
-        fadeInAnim(this.nicomobaChan);
+        this.starLayer[0].children.forEach(star => this.timeline.create(star).fadeIn(1250, tl.Easing.easeOutQuint));
+        this.timeline.create(this.nicomobaChan).fadeIn(1000, tl.Easing.easeOutQuint);
 
         this.timeline.create(start)
             .moveY(this.camera.y + g.game.height * 0.5, 250, tl.Easing.easeOutQuint)
