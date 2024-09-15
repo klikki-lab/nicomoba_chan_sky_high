@@ -104,6 +104,21 @@ export class GameScene extends CommonScene {
         });
         start.moveTo(g.game.width * 0.5, this.camera.y + start.height * 2);
         this.append(start);
+
+        const offsetY = Star.SIZE * .2;
+        const fadeInAnim = (entity: g.E): void => {
+            this.timeline.create(entity)
+                .call(() => {
+                    entity.y -= offsetY;
+                    entity.modified();
+                })
+                .moveY(entity.y + offsetY, 1000, tl.Easing.easeOutQuint)
+                .con()
+                .fadeIn(1000, tl.Easing.easeOutQuint);
+        };
+        this.starLayer[0].children.forEach(star => fadeInAnim(star));
+        fadeInAnim(this.nicomobaChan);
+
         this.timeline.create(start)
             .moveY(this.camera.y + g.game.height * 0.5, 250, tl.Easing.easeOutQuint)
             .con()
@@ -199,8 +214,9 @@ export class GameScene extends CommonScene {
         // };
 
         this.nicomobaChan = new NicomobaChan(this);
-        this.nicomobaChan.groundY = -this.nicomobaChan.height
+        this.nicomobaChan.groundY = -this.nicomobaChan.height;
         this.nicomobaChan.moveTo(g.game.width * 0.5, -this.nicomobaChan.height);
+        this.nicomobaChan.opacity = 0;
         this.nicomobaChan.onJumping = ((nicomobaChan: NicomobaChan): void => {
             if (nicomobaChan.y < -g.game.height * 0.5) {
                 moveCamera(nicomobaChan.y - g.game.height * 0.5);
@@ -286,6 +302,7 @@ export class GameScene extends CommonScene {
             const isRainbowStar = g.game.random.generate() < rainbowStarRate;
             const star = isRainbowStar ?
                 new RainbowStar(this, new Halo(this, this.effectLayer, pos), pos) : new Star(this, pos);
+            if (index === 0) star.opacity = 0;
             this.starLayer[index].append(star);
         };
 
@@ -547,7 +564,8 @@ export class GameScene extends CommonScene {
             this.camera.modified();
 
             const titleScene = new TitleScene(SceneDuration.TITLE);
-            titleScene.onFinish = (): void => g.game.replaceScene(new GameScene(this._param, SceneDuration.GAME));
+            titleScene.onFinish = (): void =>
+                g.game.replaceScene(new GameScene(this._param, SceneDuration.GAME));
             g.game.replaceScene(titleScene);
         });
         this.append(retryButton);
