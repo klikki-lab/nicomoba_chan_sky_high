@@ -95,13 +95,10 @@ export class GameScene extends CommonScene {
     };
 
     private transitionIn = (): void => {
-        this.starLayer[0].children.forEach(star => this.timeline.create(star).fadeIn(1000, tl.Easing.easeOutQuint));
-        this.timeline.create(this.nicomobaChan).fadeIn(1000, tl.Easing.easeOutQuint);
-
         const transition = new ShapeTransition(this);
         transition.x = g.game.width * .5;
         transition.y = -g.game.height * .5;
-        transition.in(() => this.startGame());
+        transition.in(() => this.startGame(), 300);
     }
 
     private startGame = (): void => {
@@ -213,7 +210,6 @@ export class GameScene extends CommonScene {
         this.nicomobaChan = new NicomobaChan(this);
         this.nicomobaChan.groundY = -this.nicomobaChan.height;
         this.nicomobaChan.moveTo(g.game.width * 0.5, -this.nicomobaChan.height);
-        this.nicomobaChan.opacity = 0;
         this.nicomobaChan.onJumping = ((nicomobaChan: NicomobaChan): void => {
             if (nicomobaChan.y < -g.game.height * 0.5) {
                 moveCamera(nicomobaChan.y - g.game.height * 0.5);
@@ -299,7 +295,6 @@ export class GameScene extends CommonScene {
             const isRainbowStar = g.game.random.generate() < rainbowStarRate;
             const star = isRainbowStar ?
                 new RainbowStar(this, new Halo(this, this.effectLayer, pos), pos) : new Star(this, pos);
-            if (index === 0) star.opacity = 0;
             this.starLayer[index].append(star);
         };
 

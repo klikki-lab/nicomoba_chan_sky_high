@@ -21,7 +21,7 @@ export class ShapeTransition extends g.Sprite {
         this.timeline = new tl.Timeline(scene);
     }
 
-    private startAnim = (initialScale: number, callback: () => void, duration: number, easing: EasingType): void => {
+    private startAnim = (initialScale: number, callback: () => void, duration: number, easing: EasingType, wait: number): void => {
         const initialOpacity = initialScale === 0 ? .25 : 1;
         this.opacity = initialOpacity;
         this.scale(initialScale);
@@ -33,6 +33,7 @@ export class ShapeTransition extends g.Sprite {
             .scaleTo(toScale, toScale, duration, easing)
             .con()
             .by({ opacity: toOpacity }, duration, easing)
+            .wait(wait)
             .call(() => {
                 this.destroy();
                 callback();
@@ -40,10 +41,10 @@ export class ShapeTransition extends g.Sprite {
     };
 
     out = (callback: () => void, duration: number = ShapeTransition.DEFAULT_DURATION): void => {
-        this.startAnim(0, callback, duration, tl.Easing.easeInCirc);
+        this.startAnim(0, callback, duration, tl.Easing.easeInCirc, 50);
     };
 
     in = (callback: () => void, duration: number = ShapeTransition.DEFAULT_DURATION): void => {
-        this.startAnim(ShapeTransition.MAX_SCALE, callback, duration, tl.Easing.easeOutCirc);
+        this.startAnim(ShapeTransition.MAX_SCALE, callback, duration, tl.Easing.easeOutCirc, 0);
     };
 }
