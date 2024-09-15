@@ -20,6 +20,7 @@ import { CommonScene } from "../common/commonScene";
 import { SceneDuration } from "../common/sceneDuration";
 import { WindowUtil } from "../common/windowUtil";
 import { DistantStar } from "./distantStar";
+import { ShapeTransition } from "./effect/shapeTransition";
 
 interface CollectedStars {
     normal: number;
@@ -65,7 +66,7 @@ export class GameScene extends CommonScene {
             assetIds: [
                 "nicomoba_chan", "tv_chan", "img_star", "img_rainbow_star", "img_halo", "img_landscape",
                 "img_start", "img_finish", "img_congrats", "img_speech_bubble", "img_last_speech",
-                "img_font", "font_glyphs", "img_retry_button",
+                "img_black_star", "img_font", "font_glyphs", "img_retry_button",
                 "nc82082_the_desired_future_edited", "nc82081_beautiful_night", "nc278695_bell",
             ],
         });
@@ -90,8 +91,18 @@ export class GameScene extends CommonScene {
         this.createNicomobaChan();
         this.createHudLayer();
 
-        this.startGame();
+        this.transitionIn();
     };
+
+    private transitionIn = (): void => {
+        this.starLayer[0].children.forEach(star => this.timeline.create(star).fadeIn(1000, tl.Easing.easeOutQuint));
+        this.timeline.create(this.nicomobaChan).fadeIn(1000, tl.Easing.easeOutQuint);
+
+        const transition = new ShapeTransition(this);
+        transition.x = g.game.width * .5;
+        transition.y = -g.game.height * .5;
+        transition.in(() => this.startGame());
+    }
 
     private startGame = (): void => {
         this.asset.getAudioById("nc82082_the_desired_future_edited").play();
@@ -104,9 +115,6 @@ export class GameScene extends CommonScene {
         });
         start.moveTo(g.game.width * 0.5, this.camera.y + start.height * 2);
         this.append(start);
-
-        this.starLayer[0].children.forEach(star => this.timeline.create(star).fadeIn(1250, tl.Easing.easeOutQuint));
-        this.timeline.create(this.nicomobaChan).fadeIn(1000, tl.Easing.easeOutQuint);
 
         this.timeline.create(start)
             .moveY(this.camera.y + g.game.height * 0.5, 250, tl.Easing.easeOutQuint)

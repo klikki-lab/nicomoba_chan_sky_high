@@ -9,6 +9,7 @@ import { SplashFragments } from "../game_scene/effect/splashFragments";
 import { Background } from "../game_scene/background";
 import { CommonScene } from "../common/commonScene";
 import { WindowUtil } from "../common/windowUtil";
+import { ShapeTransition } from "../game_scene/effect/shapeTransition";
 
 export class TitleScene extends CommonScene {
 
@@ -22,7 +23,7 @@ export class TitleScene extends CommonScene {
             assetIds: [
                 "nicomoba_chan", "img_title", "img_description",
                 "img_how_to_play", "img_to_start", "img_start_button",
-                "img_star", "img_landscape", "img_font", "font_glyphs",
+                "img_star", "img_black_star", "img_landscape", "img_font", "font_glyphs",
             ],
         });
         this.onLoad.add(this.loadHandler);
@@ -142,9 +143,17 @@ export class TitleScene extends CommonScene {
             this.onPointDownCapture.remove(this.pointDownHandler);
             this.onPointMoveCapture.remove(this.pointMoveHandler);
             WindowUtil.removeMouseMoveEventListener(this.mouseMoveListener)
-            this._onFinish?.();
+
+            this.finishScene();
             return true;
         }
+    };
+
+    private finishScene = (): void => {
+        const transition = new ShapeTransition(this);
+        transition.x = g.game.width * .5;
+        transition.y = g.game.height * .5;
+        transition.out(() => this._onFinish?.());
     };
 
     private createNicomobaChan = (star: Star, effectLayer: g.E): NicomobaChan => {

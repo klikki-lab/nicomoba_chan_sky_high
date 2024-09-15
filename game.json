@@ -282,6 +282,17 @@
 			"type": "script",
 			"path": "script/game_scene/distantStar.js",
 			"global": true
+		},
+		"img_black_star": {
+			"type": "image",
+			"path": "image/img_black_star.png",
+			"width": 32,
+			"height": 32
+		},
+		"shapeTransition": {
+			"type": "script",
+			"path": "script/game_scene/effect/shapeTransition.js",
+			"global": true
 		}
 	},
 	"moduleMainScripts": {
