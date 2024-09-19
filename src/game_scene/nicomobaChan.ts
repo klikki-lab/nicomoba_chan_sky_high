@@ -11,7 +11,7 @@ export class NicomobaChan extends g.Sprite {
     private _prev: g.CommonOffset = { x: 0, y: 0 };
     private dest: g.CommonOffset = { x: 0, y: 0 };
     private _groundY: number = 0;
-    private _maxskyHigh: number = 0;
+    private _maxSkyHigh: number = 0;
     private canJump: boolean = true;
 
     constructor(scene: g.Scene) {
@@ -85,7 +85,7 @@ export class NicomobaChan extends g.Sprite {
             this.canJump = true;
         }
 
-        this._maxskyHigh = Math.min(this._maxskyHigh, this.y);
+        this._maxSkyHigh = Math.min(this._maxSkyHigh, this.y + this.groundY);
         this.modified();
     };
 
@@ -132,12 +132,13 @@ export class NicomobaChan extends g.Sprite {
 
     get prev(): g.CommonOffset { return this._prev; }
 
-    get maxSkyHigh(): number { return this._maxskyHigh + this._groundY; };
+    get maxSkyHigh(): number { return this._maxSkyHigh; }
 
-    set groundY(groundY: number) {
-        this._groundY = groundY;
-        this._maxskyHigh = groundY;
-    }
+    getMaxSkyHighTop = (): number => this._maxSkyHigh - this.height;
+
+    get groundY(): number { return this._groundY; }
+
+    set groundY(groundY: number) { this._groundY = groundY; }
 
     set onJumping(callback: (nicomobaChan: NicomobaChan) => void) { this._onJumping = callback; };
 

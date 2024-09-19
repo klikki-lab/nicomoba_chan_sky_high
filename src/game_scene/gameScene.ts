@@ -208,8 +208,9 @@ export class GameScene extends CommonScene {
         // };
 
         this.nicomobaChan = new NicomobaChan(this);
-        this.nicomobaChan.groundY = -this.nicomobaChan.height;
-        this.nicomobaChan.moveTo(g.game.width * 0.5, -this.nicomobaChan.height);
+        const groundY = -this.nicomobaChan.height;
+        this.nicomobaChan.groundY = groundY;
+        this.nicomobaChan.moveTo(g.game.width * 0.5, groundY);
         this.nicomobaChan.onJumping = ((nicomobaChan: NicomobaChan): void => {
             if (nicomobaChan.y < -g.game.height * 0.5) {
                 moveCamera(nicomobaChan.y - g.game.height * 0.5);
@@ -217,7 +218,7 @@ export class GameScene extends CommonScene {
             this.blurLayer.append(new NicomobaChanBlur(this, nicomobaChan));
             detectCollision(nicomobaChan);
 
-            //debug();
+            // debug();
         });
         this.nicomobaChan.onFalling = ((nicomobaChan: NicomobaChan): void => {
             if (nicomobaChan.y > this.camera.y + g.game.height * 0.5) {
@@ -226,7 +227,7 @@ export class GameScene extends CommonScene {
             this.blurLayer.append(new NicomobaChanBlur(this, nicomobaChan));
             detectCollision(nicomobaChan);
 
-            //debug();
+            // debug();
         });
         this.nicomobaChan.onGround = ((nicomobaChan: NicomobaChan, normarizeVelocityY): void => {
             moveCamera(-g.game.height);
@@ -240,7 +241,7 @@ export class GameScene extends CommonScene {
                 .moveBy(0, y, duration1, tl.Easing.linear)
                 .moveBy(0, -y, duration2, tl.Easing.easeOutBounce);
 
-            //debug();
+            // debug();
         });
         this.append(this.nicomobaChan);
     };
@@ -497,22 +498,51 @@ export class GameScene extends CommonScene {
         this.showResultLabel(`MAX SKY HIGH ${fixed}m`, order, y);
     };
 
-    private adjustSkyHigh = (maxSkyHigh: number = this.nicomobaChan.maxSkyHigh): number => {
+    private calcSkyHigh = (): void => {
         const max2525Height = 25252.5;
+
+        for (let i = 0; i >= -720 * 52; i -= 50) {
+            const maxSkyHigh = i;
+            const maxSkyHighTop = i - this.nicomobaChan.height;
+            const groundY = this.nicomobaChan.groundY;
+            const top = this.tvChan.y - this.tvChan.height * 0.5;
+            const bottom = this.tvChan.y + this.tvChan.height * 0.5;
+            //console.log("nicomobaChan.y", this.nicomobaChan.y, "maxSkyHigh", maxSkyHigh, "getMaxSkyHighTop", this.nicomobaChan.getMaxSkyHighTop(),
+            //    maxSkyHigh + groundY, maxSkyHigh - this.nicomobaChan.height, "top", top, "bottom", bottom);
+
+            let result = 0;
+            if ((maxSkyHighTop >= top && maxSkyHighTop <= bottom) || (maxSkyHigh >= top && maxSkyHigh <= bottom)) {
+                result = max2525Height;
+            }
+
+            const normalized = maxSkyHighTop / bottom;
+            // console.log("maxSkyHigh", maxSkyHigh, "groundY", groundY, "maxSkyHigh - groundY", maxSkyHigh + groundY, "normalized", normalized);
+            if (normalized < 1 && normalized >= 0.95) {
+                result = normalized * max2525Height;
+            } else if (normalized < 1) {
+                result = Math.pow(normalized, 2) * max2525Height;
+            }
+            result = max2525Height + Math.pow(normalized * max2525Height, 0.5) * 8;
+            console.log(i, result, normalized, bottom);
+        }
+    };
+
+    private adjustSkyHigh = (): number => {
+        const max2525Height = 25252.5;
+        const maxSkyHigh = this.nicomobaChan.maxSkyHigh;
+        const maxSkyHighTop = this.nicomobaChan.getMaxSkyHighTop();
         const top = this.tvChan.y - this.tvChan.height * 0.5;
         const bottom = this.tvChan.y + this.tvChan.height * 0.5;
 
-        if (maxSkyHigh >= top && maxSkyHigh <= bottom) {
+        if ((maxSkyHighTop >= top && maxSkyHighTop <= bottom) || (maxSkyHigh >= top && maxSkyHigh <= bottom)) {
             return max2525Height;
         }
-
-        const normalized = maxSkyHigh / bottom;
-        if (normalized < 1 && normalized >= 0.95) {
-            return normalized * max2525Height;
-        } else if (normalized < 1) {
-            return Math.pow(normalized, 2) * max2525Height;
+        const normalized = maxSkyHighTop / bottom;
+        if (normalized < 1) {
+            return normalized >= 0.75 ?
+                normalized * max2525Height : Math.pow(maxSkyHigh / bottom, 2) * max2525Height;
         }
-        return max2525Height + Math.pow(normalized, 0.5) * 8;
+        return max2525Height + Math.pow(normalized * max2525Height, 0.5) * 4;
     };
 
     private showResultCollectedStars = (order: number, y: number): tl.Tween => {
