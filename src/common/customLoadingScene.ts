@@ -1,5 +1,3 @@
-import { Background } from "../game_scene/background";
-
 export class CustomLoadingScene extends g.LoadingScene {
 
     constructor() {
