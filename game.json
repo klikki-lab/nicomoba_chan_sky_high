@@ -293,6 +293,11 @@
 			"type": "script",
 			"path": "script/game_scene/effect/shapeTransition.js",
 			"global": true
+		},
+		"dateUtil": {
+			"type": "script",
+			"path": "script/common/dateUtil.js",
+			"global": true
 		}
 	},
 	"moduleMainScripts": {

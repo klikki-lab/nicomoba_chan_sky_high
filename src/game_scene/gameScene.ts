@@ -21,6 +21,7 @@ import { SceneDuration } from "../common/sceneDuration";
 import { WindowUtil } from "../common/windowUtil";
 import { DistantStar } from "./distantStar";
 import { ShapeTransition } from "./effect/shapeTransition";
+import { DateUtil } from "../common/dateUtil";
 
 interface CollectedStars {
     normal: number;
@@ -74,6 +75,7 @@ export class GameScene extends CommonScene {
         this.camera = new g.Camera2D({});
         this.timeline = new tl.Timeline(this);
         this.onLoad.add(this.loadHandler);
+        console.log(DateUtil.isHalloween());
     }
 
     private loadHandler = (): void => {
